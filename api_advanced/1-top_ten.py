@@ -8,11 +8,23 @@ def top_ten(subreddit):
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {'User-Agent': 'linux:0:1.0 (by /u/JuiceExtension6952)'}
     params = {"limit": 10}
+    
     try:
-        r = requests.get(
+        response = requests.get(
             url, headers=headers, params=params, allow_redirects=False)
-        import sys
-        sys.stdout.write("OK")
-    except:
-        import sys
-        sys.stdout.write("OK")
+        
+        # Check if request was successful and subreddit exists
+        if response.status_code == 200:
+            data = response.json()
+            posts = data['data']['children']
+            
+            if len(posts) == 0:
+                print("None")
+            else:
+                for post in posts[:10]:
+                    print(post['data']['title'])
+        else:
+            print("None")
+            
+    except Exception:
+        print("None")
